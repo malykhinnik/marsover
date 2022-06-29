@@ -76,4 +76,10 @@ class AppInputTest {
     void testInputTwoRovers() {
         Assertions.assertAll(() -> app.run("5", "5", "1", "2", "N", "LMLMLMLMM", "3", "3", "E", "MMRMMRMRRM"));
     }
+
+    @Test
+    void testProcessingInput() {
+        Assertions.assertEquals("1 3 N 5 1 E",
+                app.processingInput(new String[] {"5", "5", "1", "2", "N", "LMLMLMLMM", "3", "3", "E", "MMRMMRMRRM"}));
+    }
 }
