@@ -1,58 +1,52 @@
 package com.nikolaymalykhin.marsrover;
 
-import com.nikolaymalykhin.marsrover.models.Plateau;
-import com.nikolaymalykhin.marsrover.models.Rover;
-import com.nikolaymalykhin.marsrover.models.RoverPosition;
-import com.nikolaymalykhin.marsrover.service.IPlateuService;
-import com.nikolaymalykhin.marsrover.service.IRoverPositionService;
-import com.nikolaymalykhin.marsrover.service.IRoverService;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.nikolaymalykhin.marsrover.model.CardinalCompassPoint;
+import com.nikolaymalykhin.marsrover.model.Coordinates;
+import com.nikolaymalykhin.marsrover.model.Instructions;
+import com.nikolaymalykhin.marsrover.model.Plateau;
+import com.nikolaymalykhin.marsrover.model.Position;
+import com.nikolaymalykhin.marsrover.model.Rover;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
-
-@Log4j2
-@SpringBootApplication
-public class App implements CommandLineRunner {
-    final IPlateuService plateuService;
-    final IRoverService roverService;
-    final IRoverPositionService roverPositionService;
-
-    public App(final IPlateuService plateuService, final IRoverService roverService, final IRoverPositionService roverPositionService) {
-        this.plateuService = plateuService;
-        this.roverService = roverService;
-        this.roverPositionService = roverPositionService;
-    }
-
+public class App {
     public static void main(String[] args) {
-        log.info("STARTING THE APPLICATION");
-        SpringApplication.run(App.class, args);
-        log.info("APPLICATION FINISHED");
+
     }
 
-    @Override
-    public void run(String... args) {
-        processingInput(args);
-    }
+    public String run(final String[] args) {
+        String[] upperRightCoordinates = args[0].split(" ");
+        String[] rover1Position = args[1].split(" ");
+        String[] rover2Position = args[3].split(" ");
 
-    public String processingInput(final String[] args) {
-        Plateau plateau = plateuService.create(args);
-        List<Rover> rovers = roverService.create(args);
+        Plateau plateau = Plateau.builder()
+                .upperRightCoordinates(
+                        Coordinates.builder()
+                                .x(Integer.parseInt(upperRightCoordinates[0]))
+                                .y(Integer.parseInt(upperRightCoordinates[1]))
+                                .build())
+                .build();
 
-        List<RoverPosition> roverPositions = new ArrayList<>();
-        for (Rover rover : rovers) {
-            roverPositions.add(roverPositionService.calc(plateau, rover));
-        }
+        Rover rover1 = Rover.builder()
+                .position(Position.builder()
+                        .coordinates(Coordinates.builder()
+                                .x(Integer.parseInt(rover1Position[0]))
+                                .y(Integer.parseInt(rover1Position[1]))
+                                .build())
+                        .orientation(CardinalCompassPoint.valueOf(rover1Position[2]))
+                        .build())
+                .build();
+        rover1.move(Instructions.builder().series(args[2]).build());
 
-        StringJoiner response = new StringJoiner(" ");
-        for (RoverPosition roverPosition : roverPositions) {
-            response.add(roverPosition.getCurrentPositionAsString());
-        }
+        Rover rover2 = Rover.builder()
+                .position(Position.builder()
+                        .coordinates(Coordinates.builder()
+                                .x(Integer.parseInt(rover2Position[0]))
+                                .y(Integer.parseInt(rover2Position[1]))
+                                .build())
+                        .orientation(CardinalCompassPoint.valueOf(rover2Position[2]))
+                        .build())
+                .build();
+        rover2.move(Instructions.builder().series(args[4]).build());
 
-        return response.toString();
+        return rover1.getPosition() + " " + rover2.getPosition();
     }
 }
