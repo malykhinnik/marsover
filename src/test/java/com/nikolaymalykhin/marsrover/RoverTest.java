@@ -1,8 +1,10 @@
 package com.nikolaymalykhin.marsrover;
 
+import com.nikolaymalykhin.marsrover.exceptions.RoverCreateException;
 import com.nikolaymalykhin.marsrover.model.CardinalCompassPoint;
 import com.nikolaymalykhin.marsrover.model.Coordinates;
 import com.nikolaymalykhin.marsrover.model.Instructions;
+import com.nikolaymalykhin.marsrover.model.Plateau;
 import com.nikolaymalykhin.marsrover.model.Position;
 import com.nikolaymalykhin.marsrover.model.Rover;
 import org.junit.jupiter.api.Assertions;
@@ -10,13 +12,12 @@ import org.junit.jupiter.api.Test;
 
 class RoverTest {
     @Test
-    void createRover() {
-        Rover rover = createRover(1, 2, CardinalCompassPoint.N);
-        Assertions.assertEquals("1 2 N", rover.getPosition());
+    void whenCreateRoverWithoutPositionThenThrow() {
+        Assertions.assertThrows(RoverCreateException.class, () -> Rover.builder().build());
     }
 
     @Test
-    void moveRover1() {
+    void whenSeriesLMLMLMLMMFor12NThen13N() {
         Rover rover = createRover(1, 2, CardinalCompassPoint.N);
         Instructions instructions = Instructions.builder().series("LMLMLMLMM").build();
         rover.move(instructions);
@@ -24,7 +25,7 @@ class RoverTest {
     }
 
     @Test
-    void moveRover2() {
+    void whenSeriesMMRMMRMRRMFor33EThen51E() {
         Rover rover = createRover(3, 3, CardinalCompassPoint.E);
         Instructions instructions = Instructions.builder().series("MMRMMRMRRM").build();
         rover.move(instructions);
@@ -33,7 +34,8 @@ class RoverTest {
 
     private Rover createRover(final Integer x, final Integer y, final CardinalCompassPoint orientation) {
         Coordinates roverPositionCoordinates = Coordinates.builder().x(x).y(y).build();
-        Position roverPosition = Position.builder().coordinates(roverPositionCoordinates).orientation(orientation).build();
+        final Plateau plateau = Plateau.builder().upperRightCoordinates(Coordinates.builder().x(5).y(5).build()).build();
+        Position roverPosition = Position.builder().coordinates(roverPositionCoordinates).orientation(orientation).plateau(plateau).build();
         return Rover.builder().position(roverPosition).build();
     }
 }

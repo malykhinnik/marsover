@@ -1,5 +1,8 @@
 package com.nikolaymalykhin.marsrover.model;
 
+import com.nikolaymalykhin.marsrover.exceptions.PlateauCreateException;
+import com.nikolaymalykhin.marsrover.exceptions.PlateauSizeLimitException;
+
 public class Plateau {
     private final Coordinates lowerLeftCoordinates;
     private final Coordinates upperRightCoordinates;
@@ -13,12 +16,28 @@ public class Plateau {
         return new Plateau.Builder();
     }
 
-    public Coordinates getLowerLeftCoordinates() {
-        return lowerLeftCoordinates;
+    public void checkIncreaseY(final int y) {
+        if (y >= upperRightCoordinates.getY()) {
+            throw new PlateauSizeLimitException();
+        }
     }
 
-    public Coordinates getUpperRightCoordinates() {
-        return upperRightCoordinates;
+    public void checkIncreaseX(final int x) {
+        if (x >= upperRightCoordinates.getX()) {
+            throw new PlateauSizeLimitException();
+        }
+    }
+
+    public void checkDecreaseY(final int y) {
+        if (y <= lowerLeftCoordinates.getY()) {
+            throw new PlateauSizeLimitException();
+        }
+    }
+
+    public void checkDecreaseX(final int x) {
+        if (x <= lowerLeftCoordinates.getX()) {
+            throw new PlateauSizeLimitException();
+        }
     }
 
     public static class Builder {
@@ -31,6 +50,9 @@ public class Plateau {
         }
 
         public Plateau build() {
+            if (upperRightCoordinates == null) {
+                throw new PlateauCreateException();
+            }
             return new Plateau(DEFAULT_LOWER_LEFT_COORDINATES, upperRightCoordinates);
         }
     }

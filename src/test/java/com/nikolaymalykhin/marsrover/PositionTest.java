@@ -1,76 +1,118 @@
 package com.nikolaymalykhin.marsrover;
 
+import com.nikolaymalykhin.marsrover.exceptions.PlateauSizeLimitException;
+import com.nikolaymalykhin.marsrover.exceptions.PositionCreateException;
 import com.nikolaymalykhin.marsrover.model.CardinalCompassPoint;
 import com.nikolaymalykhin.marsrover.model.Coordinates;
+import com.nikolaymalykhin.marsrover.model.Plateau;
 import com.nikolaymalykhin.marsrover.model.Position;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.E;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.N;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.S;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.W;
+
 class PositionTest {
     @Test
-    void createPosition() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.N);
-        Assertions.assertEquals(1, position.getX());
-        Assertions.assertEquals(2, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.N, position.getOrientation());
+    void whenCreatePositionWithoutPlateauThrowException() {
+        Assertions.assertThrows(PositionCreateException.class,
+                () -> Position.builder().coordinates(Coordinates.builder().x(1).y(2).build()).orientation(N).build());
     }
 
     @Test
-    void spinLeft() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.N);
+    void whenCreatePositionWithoutOrientationThrowException() {
+        final Plateau plateau = createPlateau();
+        Assertions.assertThrows(PositionCreateException.class,
+                () -> Position.builder().coordinates(Coordinates.builder().x(1).y(2).build()).plateau(plateau).build());
+    }
+
+    @Test
+    void whenCreatePositionWithoutCoordinatesThrowException() {
+        final Plateau plateau = createPlateau();
+        Assertions.assertThrows(PositionCreateException.class, () -> Position.builder().orientation(N).plateau(plateau).build());
+    }
+
+    @Test
+    void whenNSpinLeftThenW() {
+        Position position = createPosition(1, 2, N);
         position.spinLeft();
-        Assertions.assertEquals(1, position.getX());
-        Assertions.assertEquals(2, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.W, position.getOrientation());
+        Position newPosition = createPosition(1, 2, W);
+        Assertions.assertEquals(newPosition, position);
     }
 
     @Test
-    void spinRight() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.N);
+    void whenNSpinRightThenE() {
+        Position position = createPosition(1, 2, N);
         position.spinRight();
-        Assertions.assertEquals(1, position.getX());
-        Assertions.assertEquals(2, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.E, position.getOrientation());
+        Position newPosition = createPosition(1, 2, E);
+        Assertions.assertEquals(newPosition, position);
     }
 
     @Test
-    void moveN() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.N);
+    void whenMoveNThenIncreaseY() {
+        Position position = createPosition(1, 2, N);
         position.move();
-        Assertions.assertEquals(1, position.getX());
-        Assertions.assertEquals(3, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.N, position.getOrientation());
+        Position newPosition = createPosition(1, 3, N);
+        Assertions.assertEquals(newPosition, position);
     }
 
     @Test
-    void moveE() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.E);
+    void whenMoveEThenIncreaseX() {
+        Position position = createPosition(1, 2, E);
         position.move();
-        Assertions.assertEquals(2, position.getX());
-        Assertions.assertEquals(2, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.E, position.getOrientation());
+        Position newPosition = createPosition(2, 2, E);
+        Assertions.assertEquals(newPosition, position);
     }
 
     @Test
-    void moveS() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.S);
+    void whenMoveSThenDecreaseY() {
+        Position position = createPosition(1, 2, S);
         position.move();
-        Assertions.assertEquals(1, position.getX());
-        Assertions.assertEquals(1, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.S, position.getOrientation());
+        Position newPosition = createPosition(1, 1, S);
+        Assertions.assertEquals(newPosition, position);
     }
 
     @Test
-    void moveW() {
-        Position position = createPosition(1, 2, CardinalCompassPoint.W);
+    void whenMoveWThenDecreaseX() {
+        Position position = createPosition(1, 2, W);
         position.move();
-        Assertions.assertEquals(0, position.getX());
-        Assertions.assertEquals(2, position.getY());
-        Assertions.assertEquals(CardinalCompassPoint.W, position.getOrientation());
+        Position newPosition = createPosition(0, 2, W);
+        Assertions.assertEquals(newPosition, position);
     }
 
-    private Position createPosition(final Integer x, final Integer y, final CardinalCompassPoint orientation) {
-        Coordinates roverPositionCoordinates = Coordinates.builder().x(x).y(y).build();
-        return Position.builder().coordinates(roverPositionCoordinates).orientation(orientation).build();
+    @Test
+    void whenMoveNOutPlateauThenThrow() {
+        Position position = createPosition(4, 5, N);
+        Assertions.assertThrows(PlateauSizeLimitException.class, position::move);
+    }
+
+    @Test
+    void whenMoveEOutPlateauThenThrow() {
+        Position position = createPosition(5, 4, E);
+        Assertions.assertThrows(PlateauSizeLimitException.class, position::move);
+    }
+
+    @Test
+    void whenMoveSOutPlateauThenThrow() {
+        Position position = createPosition(5, 0, S);
+        Assertions.assertThrows(PlateauSizeLimitException.class, position::move);
+    }
+
+    @Test
+    void whenMoveWOutPlateauThenThrow() {
+        Position position = createPosition(0, 5, W);
+        Assertions.assertThrows(PlateauSizeLimitException.class, position::move);
+    }
+
+    private Position createPosition(final int x, final int y, final CardinalCompassPoint orientation) {
+        final Coordinates roverPositionCoordinates = Coordinates.builder().x(x).y(y).build();
+        final Plateau plateau = createPlateau();
+        return Position.builder().coordinates(roverPositionCoordinates).orientation(orientation).plateau(plateau).build();
+    }
+
+    private Plateau createPlateau() {
+        return Plateau.builder().upperRightCoordinates(Coordinates.builder().x(5).y(5).build()).build();
     }
 }

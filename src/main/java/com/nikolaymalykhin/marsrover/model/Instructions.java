@@ -1,8 +1,11 @@
 package com.nikolaymalykhin.marsrover.model;
 
+import com.nikolaymalykhin.marsrover.exceptions.InstructionsCreateException;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 
-public class Instructions {
+public class Instructions implements Iterator<Instruction> {
     private final LinkedList<Instruction> allInstructions;
 
     private Instructions(final LinkedList<Instruction> allInstructions) {
@@ -17,14 +20,14 @@ public class Instructions {
         return allInstructions.removeFirst();
     }
 
-    public Boolean hasNext() {
+    public boolean hasNext() {
         return !allInstructions.isEmpty();
     }
 
     public static class Builder {
-        private LinkedList<Instruction> instructions = new LinkedList<>();
+        private final LinkedList<Instruction> instructions = new LinkedList<>();
 
-        public Instructions.Builder instruction(final String instruction) {
+        private Instructions.Builder instruction(final String instruction) {
             instructions.add(Instruction.valueOf(instruction));
             return this;
         }
@@ -34,6 +37,9 @@ public class Instructions {
         }
 
         public Builder series(final String series) {
+            if (series == null || series.isEmpty()) {
+                throw new InstructionsCreateException();
+            }
             for (String instruction : series.split("")) {
                 this.instruction(instruction);
             }

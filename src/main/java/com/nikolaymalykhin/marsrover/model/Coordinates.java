@@ -1,5 +1,7 @@
 package com.nikolaymalykhin.marsrover.model;
 
+import com.nikolaymalykhin.marsrover.exceptions.CoordinatesCreateException;
+
 import java.util.Objects;
 
 public class Coordinates {
@@ -40,9 +42,25 @@ public class Coordinates {
         return Objects.hash(x, y);
     }
 
+    public Coordinates increaseX() {
+        return Coordinates.builder().x(x + 1).y(y).build();
+    }
+
+    public Coordinates decreaseX() {
+        return Coordinates.builder().x(x - 1).y(y).build();
+    }
+
+    public Coordinates increaseY() {
+        return Coordinates.builder().x(x).y(y + 1).build();
+    }
+
+    public Coordinates decreaseY() {
+        return Coordinates.builder().x(x).y(y - 1).build();
+    }
+
     public static class Builder {
-        private int x;
-        private int y;
+        private Integer x;
+        private Integer y;
 
         public Coordinates.Builder x(final int x) {
             this.x = x;
@@ -55,6 +73,9 @@ public class Coordinates {
         }
 
         public Coordinates build() {
+            if (x == null || y == null) {
+                throw new CoordinatesCreateException();
+            }
             return new Coordinates(x, y);
         }
     }

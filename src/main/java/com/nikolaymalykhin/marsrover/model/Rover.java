@@ -1,5 +1,7 @@
 package com.nikolaymalykhin.marsrover.model;
 
+import com.nikolaymalykhin.marsrover.exceptions.RoverCreateException;
+
 public class Rover {
     private final Position position;
 
@@ -16,9 +18,7 @@ public class Rover {
     }
 
     public void move(final Instructions instructions) {
-        while (Boolean.TRUE.equals(instructions.hasNext())) {
-            move(instructions.next());
-        }
+        instructions.forEachRemaining(this::move);
     }
 
     private void move(final Instruction instruction) {
@@ -38,6 +38,9 @@ public class Rover {
         }
 
         public Rover build() {
+            if (position == null) {
+                throw new RoverCreateException();
+            }
             return new Rover(position);
         }
     }

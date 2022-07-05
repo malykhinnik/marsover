@@ -1,23 +1,51 @@
 package com.nikolaymalykhin.marsrover;
 
-import com.nikolaymalykhin.marsrover.model.CardinalCompassPoint;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.E;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.N;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.S;
+import static com.nikolaymalykhin.marsrover.model.CardinalCompassPoint.W;
+
 class CardinalCompassPointTest {
     @Test
-    void add90Degrees() {
-        Assertions.assertEquals(CardinalCompassPoint.E, CardinalCompassPoint.N.addDegrees(90));
-        Assertions.assertEquals(CardinalCompassPoint.S, CardinalCompassPoint.E.addDegrees(90));
-        Assertions.assertEquals(CardinalCompassPoint.W, CardinalCompassPoint.S.addDegrees(90));
-        Assertions.assertEquals(CardinalCompassPoint.N, CardinalCompassPoint.W.addDegrees(90));
+    void whenNTurnLeftThenW() {
+        Assertions.assertEquals(W, N.turnLeft());
     }
 
     @Test
-    void addMinus90Degrees() {
-        Assertions.assertEquals(CardinalCompassPoint.W, CardinalCompassPoint.N.addDegrees(-90));
-        Assertions.assertEquals(CardinalCompassPoint.S, CardinalCompassPoint.W.addDegrees(-90));
-        Assertions.assertEquals(CardinalCompassPoint.E, CardinalCompassPoint.S.addDegrees(-90));
-        Assertions.assertEquals(CardinalCompassPoint.N, CardinalCompassPoint.E.addDegrees(-90));
+    void whenWTurnLeftThenS() {
+        Assertions.assertEquals(S, W.turnLeft());
+    }
+
+    @Test
+    void whenSTurnLeftThenE() {
+        Assertions.assertEquals(E, S.turnLeft());
+    }
+
+    @Test
+    void whenETurnLeftThenN() {
+        Assertions.assertEquals(E, S.turnLeft());
+    }
+
+    @Test
+    void whenNTurnRightThenE() {
+        Assertions.assertEquals(E, N.turnRight());
+    }
+
+    @Test
+    void whenETurnRightThenS() {
+        Assertions.assertEquals(S, E.turnRight());
+    }
+
+    @Test
+    void whenSTurnRightThenW() {
+        Assertions.assertEquals(W, S.turnRight());
+    }
+
+    @Test
+    void whenWTurnRightThenN() {
+        Assertions.assertEquals(N, W.turnRight());
     }
 }
