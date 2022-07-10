@@ -8,7 +8,10 @@ public class Coordinates {
     private final int x;
     private final int y;
 
-    private Coordinates(final int x, final int y) {
+    private Coordinates(
+            final int x,
+            final int y
+    ) {
         this.x = x;
         this.y = y;
     }

@@ -9,8 +9,11 @@ public class Position {
     private Coordinates coordinates;
     private CardinalCompassPoint orientation;
 
-    private Position(final Coordinates coordinates, final CardinalCompassPoint orientation,
-                     final Plateau plateau) {
+    private Position(
+            final Coordinates coordinates,
+            final CardinalCompassPoint orientation,
+            final Plateau plateau
+    ) {
         this.coordinates = coordinates;
         this.orientation = orientation;
         this.plateau = plateau;
@@ -18,14 +21,6 @@ public class Position {
 
     public static Position.Builder builder() {
         return new Position.Builder();
-    }
-
-    private int getX() {
-        return coordinates.getX();
-    }
-
-    private int getY() {
-        return coordinates.getY();
     }
 
     private CardinalCompassPoint getOrientation() {
@@ -41,27 +36,19 @@ public class Position {
     }
 
     public void move() {
-        checkPlateauSize();
         switch (orientation) {
             case N -> coordinates = coordinates.increaseY();
             case E -> coordinates = coordinates.increaseX();
             case S -> coordinates = coordinates.decreaseY();
             case W -> coordinates = coordinates.decreaseX();
         }
-    }
 
-    private void checkPlateauSize() {
-        switch (orientation) {
-            case N -> plateau.checkIncreaseY(getY());
-            case E -> plateau.checkIncreaseX(getX());
-            case S -> plateau.checkDecreaseY(getY());
-            case W -> plateau.checkDecreaseX(getX());
-        }
+        plateau.inSize(coordinates);
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s %s", getX(), getY(), getOrientation());
+        return String.format("%s %s %s", coordinates.getX(), coordinates.getY(), getOrientation());
     }
 
     @Override

@@ -15,26 +15,30 @@ class PlateauTest {
 
     @Test
     void whenCheckIncreaseYOverUpperRightCoordinateYThenThrow() {
+        Coordinates coordinates = Coordinates.builder().x(0).y(6).build();
         Plateau plateau = createPlateau55();
-        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.checkIncreaseY(5));
+        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.inSize(coordinates));
     }
 
     @Test
     void whenCheckIncreaseXOverUpperRightCoordinateXThenThrow() {
+        Coordinates coordinates = Coordinates.builder().x(6).y(0).build();
         Plateau plateau = createPlateau55();
-        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.checkIncreaseX(5));
+        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.inSize(coordinates));
     }
 
     @Test
     void whenCheckDecreaseYUnderLowerLeftCoordinateYThenThrow() {
+        Coordinates coordinates = Coordinates.builder().x(0).y(-1).build();
         Plateau plateau = createPlateau55();
-        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.checkDecreaseY(0));
+        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.inSize(coordinates));
     }
 
     @Test
     void whenCheckDecreaseXUnderLowerLeftCoordinateXThenThrow() {
+        Coordinates coordinates = Coordinates.builder().x(-1).y(0).build();
         Plateau plateau = createPlateau55();
-        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.checkDecreaseX(0));
+        Assertions.assertThrows(PlateauSizeLimitException.class, () -> plateau.inSize(coordinates));
     }
 
     private Plateau createPlateau55() {
