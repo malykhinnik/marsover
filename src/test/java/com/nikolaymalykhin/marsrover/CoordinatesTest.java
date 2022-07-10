@@ -30,6 +30,7 @@ class CoordinatesTest {
         
         // вот так
         // когда 2 поля у объекта то разницы конечно нет, а вот если их больше, то сравнение всего объекта выглядит более элегентно
+        // update, а, вижу в остальных тестах так и поступал. вопрос снимается
         Assertions.assertEquals(
             Coordinates.builder().x(1).y(0).build(),
             Coordinates.builder().x(0).y(0).build().increaseX()
