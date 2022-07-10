@@ -9,10 +9,11 @@ public class Position {
     private Coordinates coordinates;
     private CardinalCompassPoint orientation;
 
+    // единственно правильный способ выравнивания нескольких аргументов :)
     private Position(
-            final Coordinates coordinates,
-            final CardinalCompassPoint orientation,
-            final Plateau plateau
+        final Coordinates coordinates,
+        final CardinalCompassPoint orientation,
+        final Plateau plateau
     ) {
         this.coordinates = coordinates;
         this.orientation = orientation;
@@ -36,6 +37,7 @@ public class Position {
     }
 
     public void move() {
+        // спорное решение должен ли Position знать о планете. ну скажем я был немного удивлен.
         switch (orientation) {
             case N -> coordinates = coordinates.increaseY();
             case E -> coordinates = coordinates.increaseX();

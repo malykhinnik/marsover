@@ -17,6 +17,7 @@ class CoordinatesTest {
     }
 
     @Test
+    // void whenTwoCoordinatesHaveTheSameXAndYThenTheyAreEqual
     void whenCoordinateXAndYEqualsOtherCoordinateXAndYThenTrue() {
         Coordinates coordinates1 = Coordinates.builder().x(0).y(0).build();
         Coordinates coordinates2 = Coordinates.builder().x(0).y(0).build();
@@ -24,7 +25,16 @@ class CoordinatesTest {
     }
 
     @Test
+    //в рамках шаринга разных подходов я обычно стараюсь сравнивать объекты 
     void whenIncreaseXThenXPlus1() {
+        
+        // вот так
+        // когда 2 поля у объекта то разницы конечно нет, а вот если их больше, то сравнение всего объекта выглядит более элегентно
+        // update, а, вижу в остальных тестах так и поступал. вопрос снимается
+        Assertions.assertEquals(
+            Coordinates.builder().x(1).y(0).build(),
+            Coordinates.builder().x(0).y(0).build().increaseX()
+        )
         Coordinates coordinates = Coordinates.builder().x(0).y(0).build();
         coordinates = coordinates.increaseX();
         Assertions.assertEquals(1, coordinates.getX());

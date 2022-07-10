@@ -18,6 +18,7 @@ public class Rover {
     }
 
     public void move(final Instructions instructions) {
+        // вот какая красота то получилась!
         instructions.forEachRemaining(this::move);
     }
 
