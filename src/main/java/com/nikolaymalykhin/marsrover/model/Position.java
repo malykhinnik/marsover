@@ -9,8 +9,12 @@ public class Position {
     private Coordinates coordinates;
     private CardinalCompassPoint orientation;
 
-    private Position(final Coordinates coordinates, final CardinalCompassPoint orientation,
-                     final Plateau plateau) {
+    // единственно правильный способ выравнивания нескольких аргументов :)
+    private Position(
+        final Coordinates coordinates, 
+        final CardinalCompassPoint orientation,
+        final Plateau plateau
+    ) {
         this.coordinates = coordinates;
         this.orientation = orientation;
         this.plateau = plateau;
@@ -20,6 +24,7 @@ public class Position {
         return new Position.Builder();
     }
 
+    // мне кажется здесь ломается инкапсуляция немного. я бы возвращал просто координату, без подробностей про X и Y
     private int getX() {
         return coordinates.getX();
     }
@@ -41,6 +46,7 @@ public class Position {
     }
 
     public void move() {
+        // спорное решение должен ли Position знать о планете. ну скажем я был немного удивлен. 
         checkPlateauSize();
         switch (orientation) {
             case N -> coordinates = coordinates.increaseY();
@@ -51,6 +57,7 @@ public class Position {
     }
 
     private void checkPlateauSize() {
+        // и вот если ты реализуешь isWithin(Coordinate) в Platou то у тебя упроститься эта функция. 
         switch (orientation) {
             case N -> plateau.checkIncreaseY(getY());
             case E -> plateau.checkIncreaseX(getX());
