@@ -15,7 +15,8 @@ public class Plateau {
     public static Plateau.Builder builder() {
         return new Plateau.Builder();
     }
-
+    // Todo я думаю тут можно упросить, оставив один метод `boolean isWithin(Coordinate point)`
+    // тоесть ты сначала получаешь координату перемещения без привязки к планете, а потом у планеты спрашиваешь есть ли такая координата
     public void checkIncreaseY(final int y) {
         if (y >= upperRightCoordinates.getY()) {
             throw new PlateauSizeLimitException();
